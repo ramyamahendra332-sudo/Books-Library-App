@@ -7,7 +7,6 @@ pipeline {
 
     environment {
         NODE_OPTIONS = '--openssl-legacy-provider'
-        SONAR_TOKEN = 'squ_905b99514fae1bcd273fac0c30089ab0a2944882'   // Your token added here
     }
 
     stages {
@@ -35,16 +34,15 @@ pipeline {
                 script {
                     def scannerHome = tool 'SonarScanner'
                     
-                    withSonarQubeEnv('SonarQube') {
-                        bat """
-                            ${scannerHome}\\bin\\sonar-scanner.bat ^
-                            -Dsonar.projectKey=books-library-app ^
-                            -Dsonar.projectName=Books-Library-App ^
-                            -Dsonar.sources=src ^
-                            -Dsonar.exclusions=**/node_modules/**,**/build/** ^
-                            -Dsonar.token=%SONAR_TOKEN%
-                        """
-                    }
+                    bat """
+                        ${scannerHome}\\bin\\sonar-scanner.bat ^
+                        -Dsonar.projectKey=books-library-app ^
+                        -Dsonar.projectName=Books-Library-App ^
+                        -Dsonar.sources=src ^
+                        -Dsonar.exclusions=**/node_modules/**,**/build/** ^
+                        -Dsonar.host.url=http://13.236.209.23:9000 ^
+                        -Dsonar.token=squ_905b99514fae1bcd273fac0c30089ab0a2944882
+                    """
                 }
             }
         }
