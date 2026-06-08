@@ -5,6 +5,10 @@ pipeline {
         nodejs 'NodeJS'
     }
 
+    environment {
+        NODE_OPTIONS = '--openssl-legacy-provider'
+    }
+
     stages {
 
         stage('Checkout') {
@@ -27,14 +31,22 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                echo 'SonarQube Scan Stage'
+                withSonarQubeEnv('SonarQube') {
+                    bat '''
+                    sonar-scanner ^
+                    -Dsonar.projectKey=books-library-app ^
+                    -Dsonar.projectName=Books-Library-App ^
+                    -Dsonar.sources=src ^
+                    -Dsonar.exclusions=**/node_modules/**,**/build/**
+                    '''
+                }
             }
         }
     }
 
     post {
         success {
-            echo 'Build completed successfully!'
+            echo 'Build and SonarQube scan completed successfully!'
         }
 
         failure {
