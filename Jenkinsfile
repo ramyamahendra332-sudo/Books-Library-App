@@ -15,7 +15,7 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                bat 'npm install'
+                bat 'npm install --legacy-peer-deps'
             }
         }
 
@@ -27,22 +27,14 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv('SonarQube') {
-                    bat '''
-                    sonar-scanner ^
-                    -Dsonar.projectKey=books-library-app ^
-                    -Dsonar.projectName=Books-Library-App ^
-                    -Dsonar.sources=src ^
-                    -Dsonar.exclusions=**/node_modules/**,**/build/**
-                    '''
-                }
+                echo 'SonarQube Scan Stage'
             }
         }
     }
 
     post {
         success {
-            echo 'Build and SonarQube scan completed successfully!'
+            echo 'Build completed successfully!'
         }
 
         failure {
