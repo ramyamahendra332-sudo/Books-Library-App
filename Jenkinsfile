@@ -31,14 +31,18 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv('SonarQube') {
-                    bat '''
-                    sonar-scanner ^
-                    -Dsonar.projectKey=books-library-app ^
-                    -Dsonar.projectName=Books-Library-App ^
-                    -Dsonar.sources=src ^
-                    -Dsonar.exclusions=**/node_modules/**,**/build/**
-                    '''
+                script {
+                    def scannerHome = tool 'SonarScanner'
+
+                    withSonarQubeEnv('SonarQube') {
+                        bat """
+                        ${scannerHome}\\bin\\sonar-scanner.bat ^
+                        -Dsonar.projectKey=books-library-app ^
+                        -Dsonar.projectName=Books-Library-App ^
+                        -Dsonar.sources=src ^
+                        -Dsonar.exclusions=**/node_modules/**,**/build/**
+                        """
+                    }
                 }
             }
         }
@@ -50,7 +54,7 @@ pipeline {
         }
 
         failure {
-            echo 'Pipeline failed. Check Jenkins console output.'
+            echo 'Pipeline failed. Check console output.'
         }
     }
 }
